@@ -1,0 +1,13 @@
+SERVER=MYRMOTE
+#Обязательно с / в конце
+SRC_SITE_PATH=/home/domains/MYSITE/
+DST_SITE_PATH=/home/www/dev/drp_china/
+
+# Что необходимо исключить при синхронизации
+EXCLUDE[0]=sites/default/settings.php
+#EXCLUDE[1]=sites/default/settings2.php
+#EXCLUDE[2]=sites/default/settings3.php
+
+# Комманды которые необходимо выполнить после синхронизации
+
+CMD_AFTER[0]="cd $DST_SITE_PATH && drush -y dis yandex_metrics googleanalytics xmlsitemap"
