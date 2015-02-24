@@ -1,0 +1,88 @@
+#!/bin/bash
+#set -x
+SITE_CFG=sites.d
+
+
+function find_dump(){
+  i=0
+  while read line
+    do
+      SITES[ $i ]="$line"
+      echo "[$i] - $line"
+      (( i++ ))
+  done < <(ls -1 $DST_SITE_PATH | grep -i sql)
+
+}
+
+
+
+#####################
+#   COLOR SECTION
+####################
+CLR_NC='\e[0m' # No Color
+CLR_WHITE='\e[1;37m'
+CLR_BLACK='\e[0;30m'
+CLR_BLUE='\e[0;34m'
+CLR_LIGHT_BLUE='\e[1;34m'
+CLR_GREEN='\e[0;32m'
+CLR_LIGHT_GREEN='\e[1;32m'
+CLR_CYAN='\e[0;36m'
+CLR_LIGHT_CYAN='\e[1;36m'
+CLR_RED='\e[0;31m'
+CLR_LIGHT_RED='\e[1;31m'
+CLR_PURPLE='\e[0;35m'
+CLR_LIGHT_PURPLE='\e[1;35m'
+CLR_BROWN='\e[0;33m'
+CLR_YELLOW='\e[1;33m'
+CLR_GRAY='\e[0;30m'
+CLR_LIGHT_GRAY='\e[0;37m'
+
+
+
+i=0
+while read line
+do
+    SITES[ $i ]="$line"
+    echo "[$i] - $line"    
+    (( i++ ))
+done < <(ls -1 $SITE_CFG)
+
+echo -en "${CLR_GREEN} Выберите нужный сайт: ${CLR_NC}"
+#read -p "${CLR_GREEN}Select site to need sync " SITE
+read SITE
+echo "Your answe $SITE"
+
+. $SITE_CFG/${SITES[$SITE]}
+
+for i in "${EXCLUDE[@]}"
+do
+    EXCLUDES=$EXCLUDES" --exclude $i"
+done
+
+echo -e "${CLR_YELLOW}Server:     $SERVER ${CLR_NC}"
+echo -e "${CLR_YELLOW}Источник:   $SRC_SITE_PATH ${CLR_NC}"
+echo -e "${CLR_YELLOW}Назначение: $DST_SITE_PATH ${CLR_NC}"
+echo -e "${CLR_YELLOW}Исключения: $EXCLUDES ${CLR_NC}"
+
+echo -e "${CLR_YELLOW}Команды: $CMD_AFTER ${CLR_NC}"
+
+
+while true; do
+    echo -en "${CLR_RED} Ну что, сихронизируемся? (y/n):  ${CLR_NC}"
+    read yn
+    case $yn in
+        [Ss]* ) find_dump; exit;;
+        [Yy]* ) break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
+
+rsync -avP $EXCLUDES  $SERVER:$SRC_SITE_PATH  $DST_SITE_PATH
+
+for CMD in "${CMD_AFTER[@]}"
+do
+    echo -e "${CLR_RED} Быдет выполнена команда: $CMD  ${CLR_NC}"
+    eval "$CMD"
+done
