@@ -1,13 +1,26 @@
-SERVER=MYRMOTE
+
+# Имя сервера, которое будет переданно rsync 
+# 
+SERVER=%MYSERVER
+
+
 #Обязательно с / в конце
-SRC_SITE_PATH=/home/domains/MYSITE/
-DST_SITE_PATH=/home/www/dev/drp_china/
+
+#Путь "на той" стороне сайта.
+SRC_SITE_PATH=/home/domains/%MYSITE/
+
+# Директория в которую необходимо положить сайт
+DST_SITE_PATH=/home/www/dev/%MYSITE/
 
 # Что необходимо исключить при синхронизации
+# Представляет собой массив. Помним, что необходимо указывать индекс
+# (это последовательная цифирка заточенная в такие вот скобки [])
 EXCLUDE[0]=sites/default/settings.php
 #EXCLUDE[1]=sites/default/settings2.php
 #EXCLUDE[2]=sites/default/settings3.php
 
-# Комманды которые необходимо выполнить после синхронизации
 
+# Комманды которые необходимо выполнить после синхронизации
+# Представляет собой массив. Помним, что необходимо указывать индекс
+# (это последовательная цифирка заточенная в такие вот скобки [])
 CMD_AFTER[0]="cd $DST_SITE_PATH && drush -y dis yandex_metrics googleanalytics xmlsitemap"
