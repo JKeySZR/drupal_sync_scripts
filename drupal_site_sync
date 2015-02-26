@@ -3,11 +3,12 @@
 
 ######################################################################
 # Скрипт по автоматизации синхронизации сайтов на Drupal с продуктива
-# на локальную систему. 
+# на локальную систему.
 #
 #
-#                                  @author: JKey
-#                                     site: software-radar.com 
+#                                @author: JKey
+#                                   site: http://software-radar.com
+#                                 github: https://github.com/JKeySZR
 ######################################################################
 
 
@@ -104,14 +105,14 @@ CLR_On_IWhite='\e[0;107m'   # White
 #    Функция поиска наличия файлов *.sql
 #---------------------------------------------------------------------
 function find_dump(){
+  echo -e "${CLR_GREEN}[SQL] $DST_SITE_PATH ${CLR_NC}"
   i=0
   while read line
     do
       SITES[ $i ]="$line"
-      echo "[$i] - $line"
+      echo "  [$i] - $line"
       (( i++ ))
   done < <(ls -1 $DST_SITE_PATH | grep -i sql)
-
 }
 
 
@@ -142,19 +143,21 @@ echo -e "${CLR_YELLOW}Server:     $SERVER ${CLR_NC}"
 echo -e "${CLR_YELLOW}Источник:   $SRC_SITE_PATH ${CLR_NC}"
 echo -e "${CLR_YELLOW}Назначение: $DST_SITE_PATH ${CLR_NC}"
 echo -e "${CLR_YELLOW}Исключения: $EXCLUDES ${CLR_NC}"
-
 echo -e "${CLR_YELLOW}Команды: $CMD_AFTER ${CLR_NC}"
 
 # Какие следующие действия ? 
 
 while true; do
-    echo -en "${CLR_IRed} Ну что, сихронизируемся? (y/n):  ${CLR_NC}"
-    read yn
-    case $yn in
+    echo -e "${CLR_IRed} r - rsync remote to local   ${CLR_NC}"
+    echo -e "${CLR_IRed} s - show SQL dump in folder $DST_SITE_PATH ${CLR_NC}"    
+    echo -e "${CLR_IGreen} q - Exit   ${CLR_NC}"        
+    echo -en "${CLR_IRed} Your choose?:  ${CLR_NC}"    
+    read input
+    case $input in
         [Ss]* ) find_dump; exit;;
-        [Yy]* ) break;;
-        [Nn]* ) exit;;
-        * ) echo "Please answer yes or no.";;
+        [Rr]* ) break;;
+        [Qq]* ) exit;;
+        * ) echo "Please select answer.";;
     esac
 done
 
